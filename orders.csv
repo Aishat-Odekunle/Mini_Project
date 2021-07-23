@@ -1,0 +1,6 @@
+customer_name,customer_address,customer_phone,items,courier,status
+
+tele lasode,"fulham broadway, se12 3d",09876,"[0, 1]",0,RECEIVED
+
+aishat odekunle,,07515,"[1, 0, 2]",2,
+

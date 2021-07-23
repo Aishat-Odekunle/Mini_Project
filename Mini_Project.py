@@ -1,159 +1,302 @@
-import sys
-#LOAD products list from products.txt
-#LOAD couriers list from couriers.txt
-file_1 = open('MINI_PROJECT\products.txt', 'r')
-lines_1 = file_1.readlines()
-file_1.close()
+import sys, csv
 
-file_2 = open('MINI_PROJECT\couriers.txt', 'r')
-lines_2 = file_2.readlines()
-file_2.close()
+with open("MINI_PROJECT\products.csv", 'r') as file_1:
+    reader = csv.reader(file_1, delimiter =',')
+        
+with open("MINI_PROJECT\couriers.csv", 'r') as file_2:
+    reader_2 = csv.reader(file_2, delimiter = ',')
+        
+with open("MINI_PROJECT\orders.csv", 'r') as file_3:
+    reader_3 = csv.reader(file_3, delimiter = ',')
+
+
+products_list = [] 
+
+couriers_list = []
+
+orders_list = []
+orders_status_list = []
 
 
 print("Hi, welcome to Aishat's Delight")
 
-product_names = input("Please enter the products you want: ").lower().split(',')
-#The strip() method removes any leading and trailing characters (space is the default leading character to remove).
-products = [word.strip() for word in product_names]
-
-courier_names = input("Please enter the couriers you want: ").lower().split(',')
-couriers = [word.strip() for word in courier_names]
-
 def instructions():
-    #This displays a set of instructions
+    # Displays a set of instructions
     print('Please follow the following instructions.')
-    print(f'You have {len(products)} items in your basket: {products}')
-    print(f'You have {len(couriers)} couriers on your list: {couriers}')
+    print(f'You have {len(products_list)} item(s) in your basket: {products_list}')
+    print(f'You have {len(couriers_list)} courier(s) on your list: {couriers_list}')
+    print(f'You have {len(orders_list)} order(s) on your list: {orders_list}')
     
     
 def main_menu():
-    while True: # Even if user inputs a number out of range the app won't break but display appropriate set of instructions.
+    while True: # If the user inputs a number out of range the app won't break but display appropriate set of instructions.
         user_input = int(input('Input: \n 0 to exit the application \
                                 \n 1 to progress to the products menu \
-                                \n 2 to progress to the couriers list '))
+                                \n 2 to progress to the couriers list \
+                                \n 3 to progress to the orders list: '))
+        #PRODUCTS MENU
         if user_input == 1:
-            print(f'You have {len(products)} items in your basket: {products}')
+            print(f'You have {len(products_list)} item(s) in your basket: {products_list}')
             user_input_2 = int(input('Input: \n 0 to return to main menu \
                                 \n 1 to print the products menu \
                                 \n 2 to add a new product and display your basket \
-                                \n 3 to print the index and items in your basket with further options \
-                                \n 4 to remove an item from your basket '))
+                                \n 3 to update existing items in your basket \
+                                \n 4 to remove an item from your basket: '))
             if user_input_2 == 1:
-                print(f'You have {len(products)} items in your basket: {products}') 
+                print(f'You have {len(products_list)} item(s) in your basket: {products_list}') 
             elif user_input_2 == 2:
-                user_input_3 = input('Enter a new item to add to your basket: ').lower()
-                products.append(user_input_3)
-                print('Your basket now has the following items: ', products)
+                new_product_dict = {}
+                new_product_dict['name'] = input("Enter a new product name: ").lower()
+                new_product_dict['price'] = input("Enter the product price: ").lower()
+                print(new_product_dict)
+                
+                products_list.append(new_product_dict)
+                print(f'You now have {len(products_list)} item(s) in your basket: {products_list}')
+                
             elif user_input_2 == 3:
                 print('index \t item')
-                for index, items in enumerate(products):
+                for index, items in enumerate(products_list):
                     print(str(index), '\t', str(items))
                     
-                user_input_index = int(input(f'You may add a new item to your basket. \
-                                    \n Input a number between 0 to {len(products)} for the position of the item you wish to add: '))
-                user_input_item = input('Enter a new item you wish to add: ')
-                    
-                #The list insert() method inserts an element to the list at the specified index
-                products.insert(user_input_index, user_input_item)
-                print(f'You now have the following items in your basket: {products}')
-                    
+                product_index = input(f'You may update an existing item in your basket. \
+                                    \n Input a number between 0 to {len(products_list)-1} for the position of the item you wish to update: ')
+                item = int(product_index)
+                item_new_name = input("input a new item name: ")
+                item_new_price = input('Input a new item price: ')
+                
+                new_product_dict_2 = {}
+                new_product_dict_2['name'] = item_new_name
+                new_product_dict_2['price'] = item_new_price
+                
+                #put an if statement to catch when they dont input anything so it remains the same
+                
+                products_list[item] = new_product_dict_2
+                
+                print(f'Your item has been updated as follows: {new_product_dict_2}')
+                print(f'You now have {len(products_list)} item(s) in your basket: {products_list}')
+                
+
+                # for key, value in item.items():
+                #     product_update = input(f'Update the item name or price: ')
+                #     if product_update == '':
+                #         item[key] = value
+                #     else:
+                #         item[key] = product_update
+                
             elif user_input_2 == 4:
-                print(f'You have the following items in your basket: {products}')
-                new_user_input_index = int(input(f'Input a number between 0 and {len(products)-1} representing the product you wish to remove: '))
-                del products[new_user_input_index]
-                print(f'Your basket now has the following items: {products}')
+                print(f'You have {len(products_list)} item(s) in your basket: {products_list}')
+                product_index_2 = int(input(f'Input a number between 0 and {len(products_list)-1} representing the item you wish to remove: '))
+                del products_list[product_index_2]
+                print(f'You now have {len(products_list)} item(s) in your basket: {products_list}')
                 
             elif user_input_2 == 0: # If the user input 0 above, return to main menu
                 x = instructions()
             else:
                 print('Enter a number between 0 and 4')
                 
+        #COURIERS LIST
         elif user_input == 2: 
-            print(f'You have {len(couriers)} couriers on your list: {couriers}')
-            user_input_4 = int(input('Input:\n 0 to return to main menu \
+            print(f'You have {len(couriers_list)} courier(s) on your list: {couriers_list}')
+            user_input_3 = int(input('Input:\n 0 to return to main menu \
                                             \n 1 to print courier list \
                                             \n 2 to add a new courier and display list \
-                                            \n 3 to print the index and couriers on your list with further options \
+                                            \n 3 to update an existing courier \
                                             \n 4 to remove a courier from your list: '))
-            if user_input_4 == 1:
-                print(f'You have {len(couriers)} couriers on your list: {couriers}') 
-            elif user_input_4 == 2:
-                user_input_5 = input('Enter a new courier to add to your list: ').lower()
-                couriers.append(user_input_5)
-                print('Your list now has the following couriers: ', couriers)
-            elif user_input_4 == 3:
+            if user_input_3 == 1:
+                print(f'You have {len(couriers_list)} courier(s) on your list: {couriers_list}') 
+            elif user_input_3 == 2:
+                new_courier_dict = {}
+                new_courier_dict['name'] = input('Enter a new courier name: ').lower()
+                new_courier_dict['phone'] = input("Enter the new courier's phone:  "). lower()
+                couriers_list.append(new_courier_dict)
+                print(f'You now have {len(couriers_list)} courier(s) on your list: {couriers_list}')
+                
+            elif user_input_3 == 3:
                 print('index \t courier')
-                for index, items in enumerate(couriers):
+                for index, items in enumerate(couriers_list):
                     print(str(index), '\t', str(items))
                     
-                user_input_courier_index = int(input(f'You may add a new courier to your list. \
-                                            \n Input a number between 0 to {len(couriers)} for the position of the courier you wish to add: '))
-                user_input_courier = input('Enter a new courier you wish to add: ')
+                courier_index = int(input(f'You may update an existing courier on your list. \
+                                            \n Input a number between 0 to {len(couriers_list)-1} for the position of the courier you wish to update: '))
+                courier = int(courier_index)
+                courier_new_name = input("input a new courier name: ")
+                courier_new_phone = input('Input a new courier phone number: ')
+                
+                new_courier_dict_2 = {}
+                new_courier_dict_2['name'] = courier_new_name
+                new_courier_dict_2['phone'] = courier_new_phone
+                
+                #put an if statement to catch when they dont input anything so it remains the same
+                
+                couriers_list[courier] = new_courier_dict_2
+                
+                print(f'Your courier has been updated as follows: {new_courier_dict_2}')
+                print(f'You now have {len(couriers_list)} courier(s) on your list: {couriers_list}')
+                
+                # for key, value in courier_item.items():
+                #     courier_update = input(f'Update the courier name or phone number: ')
+                #     if courier_update == '':
+                #         courier_item[key] = value
+                #     else:
+                #         courier_item[key] = courier_update
+                
+            elif user_input_3 == 4:
+                print(f'You have {len(couriers_list)} courier(s) on your list: {couriers_list}')
+                courier_index_2 = int(input(f'Input a number between 0 and {len(couriers_list)-1}. \
+                                    \n This represents the index of the courier you wish to remove: '))
+                del couriers_list[courier_index_2]
+                print(f'You now have {len(couriers_list)} courier(s) on your list: {couriers_list}')
+                
+            elif user_input_3 == 0: # If the user input 0 above, return to main menu
+                x = instructions()
+            else:
+                print('Enter a number between 0 and 4')
+                
+        #ORDERS LIST
+        elif user_input == 3:
+            print(f'You have {len(orders_list)} order(s) on your list: {orders_list}')
+            user_input_4 = int(input('Input:\n 0 to return to main menu \
+                                            \n 1 to print orders list. \
+                                            \n 2 to place an order: \
+                                            \n add a customer name, address and phone number. \
+                                            \n select a courier: \
+                                            \n 3 to update existing order status: \
+                                            \n 4 to update an existing order:  \
+                                            \n 5 to delete an order at index in order list : '))
+            if user_input_4 == 1:
+                print(f'You have {len(orders_list)} order(s) on your list: {orders_list}')
+                
+            elif user_input_4 == 2:
+                
+                new_order_dict = {}
+                new_order_dict['customer_name'] = input("Enter the customer's name: ").lower()
+                new_order_dict['customer_address'] = input("Enter the customer's address: ").lower()
+                new_order_dict['customer_phone'] = input("Enter the customer's phone number: ").lower()
+                
+                print('index \t product')
+                for index, items in enumerate(products_list):
+                    print(str(index), '\t', str(items))
+                
+                products_indexes = (input(f'Enter numbers between 0 and {len(products_list)-1} for the index of the items you want separated by a comma: ').lower().split(','))
+                products_indexes_list = [int(i) for i in products_indexes]               
+                new_order_dict['items'] = products_indexes_list
+                
+                print('index \t courier')
+                for index, items in enumerate(couriers_list):
+                    print(str(index), '\t', str(items))
+                new_order_dict['courier'] = int(input(f'Input a number between 0 and {len(couriers_list)-1} to select a courier. '))
+                
+                new_order_dict['status'] = 'PREPARING'
+                
+                print(new_order_dict)
+                
+                orders_list.append(new_order_dict)
+                print(orders_list)
+                
+            elif user_input_4 == 3:
+                print('index \t orders_list')
+                for index, items in enumerate(orders_list):
+                    print(str(index), '\t', str(items))
                     
-                #The list insert() method inserts an element to the list at the specified index
-                couriers.insert(user_input_courier_index, user_input_courier)
-                print(f'You now have the following couriers on your list: {couriers}')
+                order_index = int(input(f'Input a number between 0 to {len(orders_list)-1} for the position of the order status you wish to update: '))
+                
+                # PRINT order status list with its index values
+                #print('index \t orders_status_list')
+                #for index, items in enumerate(orders_status_list):
+                #    print(str(index), '\t', str(items))
                     
+                # GET user input for order status index value
+                #order_status_index = int(input(f'Input a number between 0 to {len(orders_status_list) -1} to update your order status: '))
+                    
+                orders_list[order_index]['status'] = input(f'Update your order status: ')
+                
             elif user_input_4 == 4:
-                print(f'You have the following couriers on your list: {couriers}')
-                new_user_input_courier_index = int(input(f'Input a number between 0 and {len(couriers)-1}. \
-                                                \n This represents the index of the courier you wish to remove: '))
-                del couriers[new_user_input_courier_index]
-                print(f'Your basket now has the following couriers: {couriers}')
+                print('index \t orders_list')
+                for index, items in enumerate(orders_list):
+                    print(str(index), '\t', str(items))
+                    
+                order_index_2 = int(input(f'To update an existing order -  \
+                                    \n Input a number between 0 to {len(orders_list)-1} for the position of the order you wish to update: '))   
+                order = int(order_index_2)
+                
+                order_new_name = input("Input a new order name: ")
+                order_new_address = input('Input a new order address: ')
+                order_new_phone = input("Input a new order phone number: ")
+                
+                print('index \t product')
+                for index, items in enumerate(products_list):
+                    print(str(index), '\t', str(items))
+                
+                products_indexes_2 = (input(f'Enter numbers between 0 and {len(products_list)-1} for the index of the items you want separated by a comma: ').lower().split(','))
+                products_indexes_list_2 = [int(i) for i in products_indexes_2]  
+                
+                print('index \t courier')
+                for index, items in enumerate(couriers_list):
+                    print(str(index), '\t', str(items))
+                
+                order_new_courier = int(input(f'Input a number between 0 and {len(couriers_list)-1} to select a courier. '))
+
+                order_new_status = input('Input a new status for your order: ')
+                
+                new_order_dict_2 = {}
+                new_order_dict_2['customer_name'] = order_new_name
+                new_order_dict_2['customer_address'] = order_new_address
+                new_order_dict_2['customer_phone'] = order_new_phone
+                new_order_dict_2['items'] = products_indexes_list_2
+                new_order_dict_2['courier'] = order_new_courier
+                new_order_dict_2['status'] = order_new_status
+                
+                
+                #put an if statement to catch when they dont input anything so it remains the same
+                
+                orders_list[order] = new_order_dict_2
+                
+                print(f'Your order has been updated as follows: {new_order_dict_2}')
+                print(f'You now have {len(orders_list)} orders on your list: {orders_list}')
+                
+                # order_item = orders_list[int(order_index_2)]
+                # for key, value in order_item.items():
+                #     order_update = input(f'Update your name, address, phone number, items, courier or status: ')
+                #     if order_update == '':
+                #         order_item[key] = value
+                #     else:
+                #         order_item[key] = order_update
+                #print(f'Your order has been updated as follows: {order_item}')
+                        
+            elif user_input_4 == 5:
+                print(f'You have {len(orders_list)} order(s) on your list: {orders_list}')
+                order_index_3 = int(input(f'Input a number between 0 and {len(orders_list)-1}. \
+                                    \n This represents the index of the order you wish to remove: '))
+                del orders_list[order_index_3]
+                print(f'You now have {len(orders_list)} order(s) on your list: {orders_list}')
                 
             elif user_input_4 == 0: # If the user input 0 above, return to main menu
                 x = instructions()
             else:
-                print('Enter a number between 0 and 4')
+                print('Enter a number between 0 and 5')
+                
         elif user_input == 0: #After every operation, users can input 0 to exit.
-            #SAVE product list to products.txt
-            #SAVE courier list to couriers.txt
-            with open("MINI_PROJECT\products.txt", "a") as p:
-                products_str = ' '. join([str(item) for item in products])
-                p.write(products_str + '\n')
+            #SAVE products_list to products.csv, couriers_list to couriers.csv and orders_list to orders.csv
             
+            keys = products_list[0].keys()
+            with open("MINI_PROJECT\products.csv", "a") as file_1:
+                dict_writer_1 = csv.DictWriter(file_1, keys)
+                dict_writer_1.writeheader()
+                dict_writer_1.writerows(products_list)
             
-            with open("MINI_PROJECT\couriers.txt", "a") as c:
-                couriers_str = ' '. join([str(item) for item in couriers])
-                c.write(couriers_str + '\n')
-        
+            keys = couriers_list[0].keys()
+            with open("MINI_PROJECT\couriers.csv", "a") as file_2:
+                dict_writer_2 = csv.DictWriter(file_2, keys)
+                dict_writer_2.writeheader()
+                dict_writer_2.writerows(couriers_list)
+                
+            keys = orders_list[0].keys()
+            with open("MINI_PROJECT\orders.csv", "a") as file_3:
+                dict_writer_3 = csv.DictWriter(file_3, keys)
+                dict_writer_3.writeheader()
+                dict_writer_3.writerows(orders_list)
+            
             sys.exit(0)
             
 instructions()
 main_menu()
-
-
-
-'''
-elif user_input == 1:
-    print(products)
-    
-user_input2 = int(input("Enter a product menu option please:"))
-
-if user_input2 == 0:
-    return 
-elif user_input2 == 1:
-    print(products)
-elif user_input2 == 2:
-    new_product = input("Enter a new product name")
-    products.append(new_product)
-elif user_input2 == 3:
-    print("Products index value are: ")
-    for index in range(len(products)):
-        print(index, product)
-        print(products[index])
-        product_index_value = input("Enter a product index value:")
-        new_product2 = input("Enter another new product name: ")
-        products.append(new_product2)
-elif user_input2 == 4:
-    print(products)
-    product_index_value2 = input("Enter another product index value:")
-    del products[product_index_value2]
-
-
-ELSE IF user input is 4:
-# STRETCH GOAL - DELETE product
-PRINT products list
-GET user input for product index value
-DELETE product at index in products 
-'''
