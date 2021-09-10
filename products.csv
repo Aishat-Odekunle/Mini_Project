@@ -1,8 +1,6 @@
-name,price
-
-meat,10
-
-eba,12
-
-lafu,15
-
+product_id,product_name,product_price
+1,coffee,10
+2,pizza,15
+3,rice,20
+4,burger,12
+5,fries,5

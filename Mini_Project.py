@@ -1,170 +1,141 @@
 import sys, csv
+import database_functions as db
 
-with open("MINI_PROJECT\products.csv", 'r') as file_1:
-    reader = csv.reader(file_1, delimiter =',')
-        
-with open("MINI_PROJECT\couriers.csv", 'r') as file_2:
-    reader_2 = csv.reader(file_2, delimiter = ',')
-        
-with open("MINI_PROJECT\orders.csv", 'r') as file_3:
-    reader_3 = csv.reader(file_3, delimiter = ',')
+# print('\n')
+fp = db.fetch_products()
+# print(fp)
 
+fc = db.fetch_couriers()
+# print(fc)
 
-products_list = [] 
+fo = db.fetch_orders()
+# print(fo)
 
-couriers_list = []
-
-orders_list = []
-orders_status_list = []
-
-
-print("Hi, welcome to Aishat's Delight")
 
 def instructions():
-    # Displays a set of instructions
-    print('Please follow the following instructions.')
-    print(f'You have {len(products_list)} item(s) in your basket: {products_list}')
-    print(f'You have {len(couriers_list)} courier(s) on your list: {couriers_list}')
-    print(f'You have {len(orders_list)} order(s) on your list: {orders_list}')
-    
-    
+    print("\n Hi, welcome to Aishat's Delight \n") 
+    print(' Please follow the instructions stated below.')
+
 def main_menu():
-    while True: # If the user inputs a number out of range the app won't break but display appropriate set of instructions.
-        user_input = int(input('Input: \n 0 to exit the application \
+    while True: # If the user inputs a number out of range,
+        # the app won't break but display appropriate set of instructions.
+        user_input = int(input('\n Input: \
+                                \n 0 to exit the application \
                                 \n 1 to progress to the products menu \
                                 \n 2 to progress to the couriers list \
                                 \n 3 to progress to the orders list: '))
-        #PRODUCTS MENU
+        print('\n')
+        #PRODUCTS
         if user_input == 1:
-            print(f'You have {len(products_list)} item(s) in your basket: {products_list}')
             user_input_2 = int(input('Input: \n 0 to return to main menu \
                                 \n 1 to print the products menu \
-                                \n 2 to add a new product and display your basket \
-                                \n 3 to update existing items in your basket \
-                                \n 4 to remove an item from your basket: '))
+                                \n 2 to add a new product \
+                                \n 3 to update a product \
+                                \n 4 to delete a product: '))
+            print('\n')
             if user_input_2 == 1:
-                print(f'You have {len(products_list)} item(s) in your basket: {products_list}') 
+                # GET all products from products table
+                db.products_available()
+                
             elif user_input_2 == 2:
                 new_product_dict = {}
                 new_product_dict['name'] = input("Enter a new product name: ").lower()
                 new_product_dict['price'] = input("Enter the product price: ").lower()
-                print(new_product_dict)
                 
-                products_list.append(new_product_dict)
-                print(f'You now have {len(products_list)} item(s) in your basket: {products_list}')
+                # INSERT product into products table
+                db.insert_into_products(new_product_dict['name'], new_product_dict['price'])
                 
             elif user_input_2 == 3:
-                print('index \t item')
-                for index, items in enumerate(products_list):
-                    print(str(index), '\t', str(items))
-                    
-                product_index = input(f'You may update an existing item in your basket. \
-                                    \n Input a number between 0 to {len(products_list)-1} for the position of the item you wish to update: ')
-                item = int(product_index)
-                item_new_name = input("input a new item name: ")
-                item_new_price = input('Input a new item price: ')
+                # GET all products from products table
+                db.products_available()
+                print('\n')
+                product_id = input("Enter a product_id from the above: ")
+                product_new_name = input("input a new name for the product: ")
+                product_new_price = input('Input a new price for the product: ')
                 
-                new_product_dict_2 = {}
-                new_product_dict_2['name'] = item_new_name
-                new_product_dict_2['price'] = item_new_price
+                # IF any inputs are empty, do not update them
+                # UPDATE properties for product in product table
                 
-                #put an if statement to catch when they dont input anything so it remains the same
+                # if product_id or product_new_name or product_new_price == '':
+                    # product_id = 
                 
-                products_list[item] = new_product_dict_2
-                
-                print(f'Your item has been updated as follows: {new_product_dict_2}')
-                print(f'You now have {len(products_list)} item(s) in your basket: {products_list}')
-                
-
-                # for key, value in item.items():
-                #     product_update = input(f'Update the item name or price: ')
-                #     if product_update == '':
-                #         item[key] = value
-                #     else:
-                #         item[key] = product_update
+                db.update_product(product_new_name, product_new_price, product_id)
                 
             elif user_input_2 == 4:
-                print(f'You have {len(products_list)} item(s) in your basket: {products_list}')
-                product_index_2 = int(input(f'Input a number between 0 and {len(products_list)-1} representing the item you wish to remove: '))
-                del products_list[product_index_2]
-                print(f'You now have {len(products_list)} item(s) in your basket: {products_list}')
+                # GET all products from products table
+                db.products_available()
+                print('\n')
+                product_id_2 = input("Enter a product_id from the above: ")
+                db.delete_product(product_id_2)
                 
             elif user_input_2 == 0: # If the user input 0 above, return to main menu
                 x = instructions()
             else:
-                print('Enter a number between 0 and 4')
+                print('Please enter a number between 0 and 4')
                 
-        #COURIERS LIST
+                
+        #COURIERS
         elif user_input == 2: 
-            print(f'You have {len(couriers_list)} courier(s) on your list: {couriers_list}')
             user_input_3 = int(input('Input:\n 0 to return to main menu \
-                                            \n 1 to print courier list \
-                                            \n 2 to add a new courier and display list \
+                                            \n 1 to print the couriers list \
+                                            \n 2 to add a new courier \
                                             \n 3 to update an existing courier \
-                                            \n 4 to remove a courier from your list: '))
+                                            \n 4 to delete a courier: '))
+            print('\n')
             if user_input_3 == 1:
-                print(f'You have {len(couriers_list)} courier(s) on your list: {couriers_list}') 
+                # couriers_available()
+                db.couriers_available()
+                
             elif user_input_3 == 2:
+                
                 new_courier_dict = {}
-                new_courier_dict['name'] = input('Enter a new courier name: ').lower()
-                new_courier_dict['phone'] = input("Enter the new courier's phone:  "). lower()
-                couriers_list.append(new_courier_dict)
-                print(f'You now have {len(couriers_list)} courier(s) on your list: {couriers_list}')
+                new_courier_dict['name'] = input("Enter a new courier name: ").lower()
+                new_courier_dict['phone'] = input("Enter the courier's phone number: ").lower()
+                
+                # INSERT courier into courier table
+                db.insert_into_couriers(new_courier_dict['name'], new_courier_dict['phone'])
                 
             elif user_input_3 == 3:
-                print('index \t courier')
-                for index, items in enumerate(couriers_list):
-                    print(str(index), '\t', str(items))
-                    
-                courier_index = int(input(f'You may update an existing courier on your list. \
-                                            \n Input a number between 0 to {len(couriers_list)-1} for the position of the courier you wish to update: '))
-                courier = int(courier_index)
+                # GET all couriers from couriers table
+                db.couriers_available()
+                print('\n')
+                
+                courier_id = input("Select a courier_id from the above: ")
                 courier_new_name = input("input a new courier name: ")
-                courier_new_phone = input('Input a new courier phone number: ')
+                courier_new_phone = input("Input the new courier's phone number: ")
                 
-                new_courier_dict_2 = {}
-                new_courier_dict_2['name'] = courier_new_name
-                new_courier_dict_2['phone'] = courier_new_phone
+                # IF an input is empty, do not update its respective table property
+                # if product_id or product_new_name or product_new_price == '':
                 
-                #put an if statement to catch when they dont input anything so it remains the same
+                # UPDATE properties for courier in courier table
+                db.update_courier(courier_new_name, courier_new_phone, courier_id)
                 
-                couriers_list[courier] = new_courier_dict_2
-                
-                print(f'Your courier has been updated as follows: {new_courier_dict_2}')
-                print(f'You now have {len(couriers_list)} courier(s) on your list: {couriers_list}')
-                
-                # for key, value in courier_item.items():
-                #     courier_update = input(f'Update the courier name or phone number: ')
-                #     if courier_update == '':
-                #         courier_item[key] = value
-                #     else:
-                #         courier_item[key] = courier_update
                 
             elif user_input_3 == 4:
-                print(f'You have {len(couriers_list)} courier(s) on your list: {couriers_list}')
-                courier_index_2 = int(input(f'Input a number between 0 and {len(couriers_list)-1}. \
-                                    \n This represents the index of the courier you wish to remove: '))
-                del couriers_list[courier_index_2]
-                print(f'You now have {len(couriers_list)} courier(s) on your list: {couriers_list}')
+                # GET all couriers from couriers table
+                db.couriers_available()
+                print('\n')
+                
+                courier_id_2 = input("Select a courier_id from the above: ")
+                db.delete_courier(courier_id_2)
                 
             elif user_input_3 == 0: # If the user input 0 above, return to main menu
                 x = instructions()
             else:
-                print('Enter a number between 0 and 4')
+                print('Please enter a number between 0 and 4')
                 
-        #ORDERS LIST
+        #ORDERS
         elif user_input == 3:
-            print(f'You have {len(orders_list)} order(s) on your list: {orders_list}')
+            # print(f'You have {len(orders_list)} order(s) on your list: {orders_list}')
             user_input_4 = int(input('Input:\n 0 to return to main menu \
                                             \n 1 to print orders list. \
-                                            \n 2 to place an order: \
-                                            \n add a customer name, address and phone number. \
-                                            \n select a courier: \
+                                            \n 2 to place an order: add a customer name, address, phone number and select a courier \
                                             \n 3 to update existing order status: \
                                             \n 4 to update an existing order:  \
-                                            \n 5 to delete an order at index in order list : '))
+                                            \n 5 to delete an order: '))
+            print('\n')
             if user_input_4 == 1:
-                print(f'You have {len(orders_list)} order(s) on your list: {orders_list}')
+                db.orders_available()
                 
             elif user_input_4 == 2:
                 
@@ -172,129 +143,125 @@ def main_menu():
                 new_order_dict['customer_name'] = input("Enter the customer's name: ").lower()
                 new_order_dict['customer_address'] = input("Enter the customer's address: ").lower()
                 new_order_dict['customer_phone'] = input("Enter the customer's phone number: ").lower()
+                print('\n')
                 
-                print('index \t product')
-                for index, items in enumerate(products_list):
-                    print(str(index), '\t', str(items))
+                # products_available()
+                db.products_available()
+                print('\n')
                 
-                products_indexes = (input(f'Enter numbers between 0 and {len(products_list)-1} for the index of the items you want separated by a comma: ').lower().split(','))
+                products_indexes = (input(f'Enter the product_id(s) for the products you want separated by a comma: ').lower().split(','))
                 products_indexes_list = [int(i) for i in products_indexes]               
-                new_order_dict['items'] = products_indexes_list
+                new_order_dict['items'] = str(products_indexes_list)
                 
-                print('index \t courier')
-                for index, items in enumerate(couriers_list):
-                    print(str(index), '\t', str(items))
-                new_order_dict['courier'] = int(input(f'Input a number between 0 and {len(couriers_list)-1} to select a courier. '))
+                print('\n')
+                #couriers_available()
+                db.couriers_available()
+                print('\n')
+                new_order_dict['courier_id'] = int(input(f'Input a courier_id to select a courier. '))
+                print('\n')
+                new_order_dict['order_status'] = 1
                 
-                new_order_dict['status'] = 'PREPARING'
+                #Insert order into orders table here
+                db.insert_into_orders(new_order_dict['customer_name'], new_order_dict['customer_address'], 
+                                    new_order_dict['customer_phone'], new_order_dict['courier_id'],  
+                                    new_order_dict['items'], new_order_dict['order_status'])
                 
-                print(new_order_dict)
-                
-                orders_list.append(new_order_dict)
-                print(orders_list)
+                print("You have successfully placed your order. Your order is currently being prepared.")
                 
             elif user_input_4 == 3:
-                print('index \t orders_list')
-                for index, items in enumerate(orders_list):
-                    print(str(index), '\t', str(items))
-                    
-                order_index = int(input(f'Input a number between 0 to {len(orders_list)-1} for the position of the order status you wish to update: '))
+                # GET all orders from orders table
+                db.orders_available()
+                print('\n')
+                # GET user input for order ID
+                order_id = int(input("Enter an order_id from the above: "))
+                print('\n')
                 
-                # PRINT order status list with its index values
-                #print('index \t orders_status_list')
-                #for index, items in enumerate(orders_status_list):
-                #    print(str(index), '\t', str(items))
-                    
-                # GET user input for order status index value
-                #order_status_index = int(input(f'Input a number between 0 to {len(orders_status_list) -1} to update your order status: '))
-                    
-                orders_list[order_index]['status'] = input(f'Update your order status: ')
+                # GET all order statuses from order_status table
+                db.orders_statuses()
+                print('\n')
+                # GET user input for order status ID
+                order_status_id = int(input("Enter an order_status_id from the above: "))
+                
+                # UPDATE status for order
+                db.update_order_status(order_status_id, order_id)
                 
             elif user_input_4 == 4:
-                print('index \t orders_list')
-                for index, items in enumerate(orders_list):
-                    print(str(index), '\t', str(items))
-                    
-                order_index_2 = int(input(f'To update an existing order -  \
-                                    \n Input a number between 0 to {len(orders_list)-1} for the position of the order you wish to update: '))   
-                order = int(order_index_2)
+                # GET all orders from orders table
+                db.orders_available()
+                print('\n')
+                order_id_2 = input("Enter an order_id from the above: ")
+                print('\n')
                 
-                order_new_name = input("Input a new order name: ")
-                order_new_address = input('Input a new order address: ')
-                order_new_phone = input("Input a new order phone number: ")
+                # GET user input for customer name
+                # GET user input for customer address
+                # GET user input for customer phone number
+                customer_new_name = input("Input a new customer name: ")
+                customer_new_address = input('Input a new customer address: ')
+                customer_new_phone = input("Input a new customer phone number: ")
+                print('\n')
                 
-                print('index \t product')
-                for index, items in enumerate(products_list):
-                    print(str(index), '\t', str(items))
+                # GET all products from products table
+                db.products_available()
+                print('\n')
+                products_indexes_2 = (input('Enter the product_id(s) for the items you want separated by a comma: ').lower().split(','))
                 
-                products_indexes_2 = (input(f'Enter numbers between 0 and {len(products_list)-1} for the index of the items you want separated by a comma: ').lower().split(','))
                 products_indexes_list_2 = [int(i) for i in products_indexes_2]  
                 
-                print('index \t courier')
-                for index, items in enumerate(couriers_list):
-                    print(str(index), '\t', str(items))
+                string_indexes = str(products_indexes_list_2)
+                print('\n')
                 
-                order_new_courier = int(input(f'Input a number between 0 and {len(couriers_list)-1} to select a courier. '))
-
-                order_new_status = input('Input a new status for your order: ')
+                # GET all couriers from couriers table
+                db.couriers_available()
+                print('\n')
+                order_new_courier = int(input('Input a courier_id to select a new courier. '))
                 
-                new_order_dict_2 = {}
-                new_order_dict_2['customer_name'] = order_new_name
-                new_order_dict_2['customer_address'] = order_new_address
-                new_order_dict_2['customer_phone'] = order_new_phone
-                new_order_dict_2['items'] = products_indexes_list_2
-                new_order_dict_2['courier'] = order_new_courier
-                new_order_dict_2['status'] = order_new_status
+                # UPDATE order in orders table
+                db.update_order(customer_new_name, customer_new_address, customer_new_phone, order_new_courier,
+                            string_indexes, order_id_2)
                 
-                
-                #put an if statement to catch when they dont input anything so it remains the same
-                
-                orders_list[order] = new_order_dict_2
-                
-                print(f'Your order has been updated as follows: {new_order_dict_2}')
-                print(f'You now have {len(orders_list)} orders on your list: {orders_list}')
-                
-                # order_item = orders_list[int(order_index_2)]
-                # for key, value in order_item.items():
-                #     order_update = input(f'Update your name, address, phone number, items, courier or status: ')
-                #     if order_update == '':
-                #         order_item[key] = value
-                #     else:
-                #         order_item[key] = order_update
-                #print(f'Your order has been updated as follows: {order_item}')
-                        
             elif user_input_4 == 5:
-                print(f'You have {len(orders_list)} order(s) on your list: {orders_list}')
-                order_index_3 = int(input(f'Input a number between 0 and {len(orders_list)-1}. \
-                                    \n This represents the index of the order you wish to remove: '))
-                del orders_list[order_index_3]
-                print(f'You now have {len(orders_list)} order(s) on your list: {orders_list}')
+                
+                # STRETCH GOAL - DELETE order
+                db.orders_available()
+                print('\n')
+                order_id_3 = input("Enter an order_id from the above to delete the order: ")
+                
+                db.delete_order(order_id_3)
                 
             elif user_input_4 == 0: # If the user input 0 above, return to main menu
                 x = instructions()
             else:
-                print('Enter a number between 0 and 5')
+                print('Please enter a number between 0 and 5')
                 
         elif user_input == 0: #After every operation, users can input 0 to exit.
             #SAVE products_list to products.csv, couriers_list to couriers.csv and orders_list to orders.csv
-            
-            keys = products_list[0].keys()
-            with open("MINI_PROJECT\products.csv", "a") as file_1:
-                dict_writer_1 = csv.DictWriter(file_1, keys)
+            # print(fp)
+            # print('\n')
+            fieldnames_1 = ['product_id', 'product_name', 'product_price']
+            with open("products.csv", "w", newline='') as file_1:
+                dict_writer_1 = csv.DictWriter(file_1, fieldnames=fieldnames_1)
                 dict_writer_1.writeheader()
-                dict_writer_1.writerows(products_list)
-            
-            keys = couriers_list[0].keys()
-            with open("MINI_PROJECT\couriers.csv", "a") as file_2:
-                dict_writer_2 = csv.DictWriter(file_2, keys)
-                dict_writer_2.writeheader()
-                dict_writer_2.writerows(couriers_list)
+                dict_writer_1.writerows(fp)
                 
-            keys = orders_list[0].keys()
-            with open("MINI_PROJECT\orders.csv", "a") as file_3:
-                dict_writer_3 = csv.DictWriter(file_3, keys)
+                
+            # print(fc)
+            # print('\n')
+            fieldnames_2 = ['courier_id', 'courier_name', 'phone_number']
+            with open("couriers.csv", "w", newline='') as file_2:
+                dict_writer_2 = csv.DictWriter(file_2, fieldnames=fieldnames_2)
+                dict_writer_2.writeheader()
+                dict_writer_2.writerows(fc)
+                
+                
+            # print(fo)
+            # print('\n')
+            fieldnames_3 = ['order_id', 'customer_name', 'address', 
+                            'phone_number', 'courier', 'items', 'order_status']
+            with open("orders.csv", "w", newline='') as file_3:
+                dict_writer_3 = csv.DictWriter(file_3, fieldnames=fieldnames_3)
                 dict_writer_3.writeheader()
-                dict_writer_3.writerows(orders_list)
+                dict_writer_3.writerows(fo)
+            
             
             sys.exit(0)
             

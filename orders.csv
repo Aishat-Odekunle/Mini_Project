@@ -1,6 +1,3 @@
-customer_name,customer_address,customer_phone,items,courier,status
-
-tele lasode,"fulham broadway, se12 3d",09876,"[0, 1]",0,RECEIVED
-
-aishat odekunle,,07515,"[1, 0, 2]",2,
-
+order_id,customer_name,address,phone_number,courier,items,order_status
+1,daniel lawson,london,12345678901,2,"[1, 2, 3]",2
+2,aishat odekunle,london,34567890123,6,"[2, 5, 3]",1

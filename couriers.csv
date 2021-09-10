@@ -1,8 +1,6 @@
-name,phone
-
-aishat,09
-
-ola,05
-
-alim,07
-
+courier_id,courier_name,phone_number
+1,hayley,12345678901
+2,thomas,23456178901
+4,regina,67890123471
+5,claire,71257902345
+6,thanos,12309876523
